@@ -1,0 +1,27 @@
+<resources>
+    <string name="app_name">Grocery App</string>
+    <string name="login">Login</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="forgot_password">Forgot Password?</string>
+    <string name="recover_password">Recover Password</string>
+    <string name="recover">Recover</string>
+    <string name="register">Register</string>
+    <string name="register_user">Register User</string>
+    <string name="full_name">Full Name</string>
+    <string name="phone">Phone</string>
+    <string name="country">Country</string>
+    <string name="state">State</string>
+    <string name="city">City</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="shop_name">Shop Name</string>
+    <string name="delivery_fee">Delivery Fee</string>
+    <string name="register_seller">Register Seller</string>
+    <string name="are_you_a_seller_register_as_seller">Are you a seller? Register as Seller</string>
+    <string name="complete_address">Complete Address</string>
+    <string name="name">Name</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="address">Address</string>
+    <string name="update">Update</string>
+    <string name="shop_open">Shop Open</string>
+</resources>
