@@ -1,4 +1,4 @@
-package com.example.groceryapp;
+package com.example.groceryapp.activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.groceryapp.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthResult;
@@ -150,13 +151,13 @@ public class LoginActivity extends AppCompatActivity {
                             if (accountType.equals("Seller")){
                                 progressDialog.dismiss();
                                 // user is seller
-                                startActivity(new Intent(LoginActivity.this,MainSellerActivity.class));
+                                startActivity(new Intent(LoginActivity.this, MainSellerActivity.class));
                                 finish();
                             }
                             else {
                                 progressDialog.dismiss();
                                 // user is buyer
-                                startActivity(new Intent(LoginActivity.this,MainUserActivity.class));
+                                startActivity(new Intent(LoginActivity.this, MainUserActivity.class));
                                 finish();
                             }
                         }
