@@ -30,6 +30,15 @@
             android:layout_toStartOf="@id/logoutBtn"
             android:background="@null"/>
 
+        <!--Settings buttons-->
+        <ImageButton
+            android:id="@+id/settingsBtn"
+            android:layout_width="@dimen/_30sdp"
+            android:layout_height="@dimen/_30sdp"
+            android:background="@null"
+            android:src="@drawable/ic_settings_white"
+            android:layout_toStartOf="@id/editProfileBtn"/>
+
         <com.blogspot.atifsoftwares.circularimageview.CircularImageView
             android:layout_width="@dimen/_70sdp"
             android:layout_height="@dimen/_70sdp"
@@ -110,9 +119,19 @@
     </RelativeLayout>
     <!--orders UI-->
     <RelativeLayout
+        android:visibility="gone"
         android:id="@id/ordersRl"
         android:layout_below="@id/toolbarRl"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+        <!--recyclerView: show orders (newest first)-->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/ordersRv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:stackFromEnd="true"
+            app:reverseLayout="true"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/row_order_user"/>
     </RelativeLayout>
 </RelativeLayout>

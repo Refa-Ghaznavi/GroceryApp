@@ -11,17 +11,21 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.groceryapp.Constants;
 import com.example.groceryapp.R;
+import com.example.groceryapp.adapters.AdapterOrderShop;
 import com.example.groceryapp.adapters.AdapterProductSeller;
+import com.example.groceryapp.models.ModelOrderShop;
 import com.example.groceryapp.models.ModelProduct;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -39,18 +43,22 @@ import java.util.HashMap;
 
 public class MainSellerActivity extends AppCompatActivity {
 
-    private TextView nameTv, shopNameTv, emailTv, tabProductsTv, tabOrdersTv, filterProductsTv;
+    private TextView nameTv, shopNameTv, emailTv, tabProductsTv, tabOrdersTv, filterProductsTv,filteredOrdersTv;
     private EditText searchProductEt;
-    private ImageButton logoutBtn, editProfileBtn, addProductBtn, filterProductBtn;
+    private ImageButton logoutBtn, editProfileBtn, addProductBtn, filterProductBtn,filterOrderBtn,moreBtn;
     private ImageView profileIv;
     private RelativeLayout productsRl, ordersRl;
-    private RecyclerView productsRv;
+    private RecyclerView productsRv,ordersRv;
 
     private FirebaseAuth firebaseAuth;
     private ProgressDialog progressDialog;
 
     private ArrayList<ModelProduct> productsList;
     private AdapterProductSeller adapterProductSeller;
+
+    private ArrayList<ModelOrderShop> orderShopsArrayList;
+    private AdapterOrderShop adapterOrderShop;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +80,10 @@ public class MainSellerActivity extends AppCompatActivity {
         productsRl = findViewById(R.id.productsRl);
         ordersRl = findViewById(R.id.ordersRl);
         productsRv = findViewById(R.id.productsRv);
+        filteredOrdersTv = findViewById(R.id.filteredOrdersTv);
+        filterOrderBtn = findViewById(R.id.filterOrderBtn);
+        ordersRv = findViewById(R.id.ordersRv);
+        moreBtn = findViewById(R.id.moreBtn);
 
         progressDialog = new ProgressDialog(this);
         progressDialog.setTitle("Please wait");
@@ -80,6 +92,8 @@ public class MainSellerActivity extends AppCompatActivity {
         checkUser();
         loadAllProducts();
         showProductsUI();
+        loadAllOrders();
+
 
         // search
         searchProductEt.addTextChangedListener(new TextWatcher() {
@@ -166,6 +180,100 @@ public class MainSellerActivity extends AppCompatActivity {
                 .show();
             }
         });
+
+        filterOrderBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // options to display in dialog
+                final String[] options = {"All", "In Progress", "Completed","Cancelled"};
+                // dialog
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainSellerActivity.this);
+                builder.setTitle("Filter Orders:")
+                        .setItems(options, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                // handle item clicks
+                                if(i == 0){
+                                    //all clicked
+                                    filteredOrdersTv.setText("Showing All Orders");
+                                    adapterOrderShop.getFilter().filter(""); // show all orders
+                                }
+                                else{
+                                    String optionClicked = options[i];
+                                    filteredOrdersTv.setText("Showing"+optionClicked+"Orders");// e.g showing completed orders
+                                    adapterOrderShop.getFilter().filter(optionClicked);
+                                }
+                            }
+                        })
+                        .show();
+            }
+        });
+
+        // popup menu
+        final PopupMenu popupMenu = new PopupMenu(MainSellerActivity.this, moreBtn);
+        // add menu items to our menu
+        popupMenu.getMenu().add("Settings");
+        popupMenu.getMenu().add("Reviews");
+        popupMenu.getMenu().add("Promotion Codes");
+        // handle menu item click
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                if(menuItem.getTitle() == "Settings"){
+                    // start settings screen
+                    startActivity(new Intent(MainSellerActivity.this,SettingsActivity.class));
+                }
+                else if( menuItem.getTitle() == "Reviews"){
+                    //open same reviews activity as used in user main page
+                    Intent intent = new Intent(MainSellerActivity.this,ShopReviewsActivity.class);
+                    intent.putExtra("shopUid",""+firebaseAuth.getUid());
+                    startActivity(intent);
+                }
+                else if( menuItem.getTitle() == "Promotion Codes"){
+                    // start promotion list screen
+                    startActivity(new Intent(MainSellerActivity.this,PromotionCodesActivity.class));
+                }
+                return true;
+            }
+        });
+
+        // Show more options: settings, Reviews, promotion codes
+        moreBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // show popup menu
+                popupMenu.show();
+            }
+        });
+    }
+    private void loadAllOrders() {
+        // init array list
+        orderShopsArrayList = new ArrayList<>();
+
+        //load orders of shop
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Users");
+        ref.child(firebaseAuth.getUid()).child("Orders")
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        // clear list before adding new data in it
+                        orderShopsArrayList.clear();
+                        for (DataSnapshot ds: snapshot.getChildren()){
+                            ModelOrderShop modelOrderShop = ds.getValue(ModelOrderShop.class);
+                            // add to list
+                            orderShopsArrayList.add(modelOrderShop);
+                        }
+                        // setup adapter
+                        adapterOrderShop = new AdapterOrderShop(MainSellerActivity.this,orderShopsArrayList);
+                        // set adapter to recyclerView
+                        ordersRv.setAdapter(adapterOrderShop);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
     }
 
     private void loadFilteredProducts(final String selected) {

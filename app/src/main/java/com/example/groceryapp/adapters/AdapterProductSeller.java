@@ -18,6 +18,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.groceryapp.FilterProductUser;
 import com.example.groceryapp.activities.EditProductActivity;
 import com.example.groceryapp.FilterProduct;
 import com.example.groceryapp.models.ModelProduct;
@@ -86,6 +87,7 @@ public class AdapterProductSeller extends RecyclerView.Adapter<AdapterProductSel
             // product is not an discount
             holder.discountedPriceTv.setVisibility(View.GONE);
             holder.discountedNoteTv.setVisibility(View.GONE);
+            holder.originalPriceTv.setPaintFlags(0);
         }
 
         try {

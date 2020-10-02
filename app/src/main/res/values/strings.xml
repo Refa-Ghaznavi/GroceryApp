@@ -51,4 +51,9 @@
     <string name="edit_product">Edit Product</string>
     <string name="shops">Shops</string>
     <string name="closed">Closed</string>
+    <string name="open">Open</string>
+    <string name="add_to_cart">Add To Cart</string>
+    <string name="product_description">Product Description</string>
+    <string name="_42_99">42.99</string>
+    <string name="the_original_review_of_the_user">The original review of the user</string>
 </resources>

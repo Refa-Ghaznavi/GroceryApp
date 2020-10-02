@@ -15,7 +15,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.groceryapp.R;
+import com.example.groceryapp.adapters.AdapterOrderUser;
 import com.example.groceryapp.adapters.AdapterShop;
+import com.example.groceryapp.models.ModelOrderUser;
 import com.example.groceryapp.models.ModelShop;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -34,10 +36,10 @@ import java.util.HashMap;
 public class MainUserActivity extends AppCompatActivity {
 
     private TextView nameTv,emailTv,phoneTv,tabShopsTv,tabOrdersTv;
-    private ImageButton logoutBtn, editProfileBtn;
+    private ImageButton logoutBtn, editProfileBtn,settingsBtn;
     private RelativeLayout shopsRl,ordersRl;
     private ImageView profileIv;
-    private RecyclerView shopsRv;
+    private RecyclerView shopsRv, ordersRv;
 
 
     private FirebaseAuth firebaseAuth;
@@ -45,6 +47,9 @@ public class MainUserActivity extends AppCompatActivity {
 
     private ArrayList<ModelShop> shopsList;
     private AdapterShop adapterShop;
+
+    private ArrayList<ModelOrderUser> ordersList;
+    private AdapterOrderUser adapterOrderUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +67,8 @@ public class MainUserActivity extends AppCompatActivity {
         shopsRl = findViewById(R.id.shopsRl);
         ordersRl = findViewById(R.id.ordersRl);
         shopsRv = findViewById(R.id.shopsRv);
+        ordersRv = findViewById(R.id.ordersRv);
+        settingsBtn = findViewById(R.id.settingsBtn);
 
         progressDialog = new ProgressDialog(this);
         progressDialog.setTitle("Please wait");
@@ -103,6 +110,13 @@ public class MainUserActivity extends AppCompatActivity {
                 showOrdersUI();
             }
         });
+        // start settings screen
+        settingsBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MainUserActivity.this,SettingsActivity.class));
+            }
+        });
     }
 
     private void showShopsUI() {
@@ -137,6 +151,7 @@ public class MainUserActivity extends AppCompatActivity {
         hashMap.put("online","false");
 
         // update value to db
+
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Users");
         ref.child(firebaseAuth.getUid()).updateChildren(hashMap)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -203,6 +218,7 @@ public class MainUserActivity extends AppCompatActivity {
 
                             // load only those that are int the city of user
                             loadShops(city);
+                            loadOrders();
 
                         }
                     }
@@ -212,6 +228,53 @@ public class MainUserActivity extends AppCompatActivity {
 
                     }
                 });
+    }
+
+    private void loadOrders() {
+        // init order list
+        ordersList = new ArrayList<>();
+
+        // get orders
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Users");
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                ordersList.clear();
+                for (DataSnapshot ds: snapshot.getChildren()){
+                    String uid = ""+ds.getRef().getKey();
+
+                    DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Users").child(uid).child("Orders");
+                    ref.orderByChild("orderBy").equalTo(firebaseAuth.getUid())
+                            .addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    if(snapshot.exists()){
+                                        for (DataSnapshot ds: snapshot.getChildren()){
+                                            ModelOrderUser modelOrderUser = ds.getValue(ModelOrderUser.class);
+
+                                            // add to list
+                                            ordersList.add(modelOrderUser);
+                                        }
+                                        // setup adapter
+                                        adapterOrderUser = new AdapterOrderUser(MainUserActivity.this,ordersList);
+                                        // set to recyclerView
+                                        ordersRv.setAdapter(adapterOrderUser);
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                }
+                            });
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     private void loadShops(final String myCity) {

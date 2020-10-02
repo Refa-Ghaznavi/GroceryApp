@@ -13,8 +13,6 @@
         android:layout_height="@dimen/_60sdp"
         android:padding="@dimen/_10sdp"
         android:background="@drawable/shape_rect01">
-
-
         <ImageButton
             android:id="@+id/backBtn"
             android:src="@drawable/ic_back_white"
@@ -29,7 +27,6 @@
             android:textColor="@color/colorWhite"
             android:textSize="@dimen/_20ssp"
             android:textStyle="bold"/>
-
     </RelativeLayout>
 
     <!--form to input data-->

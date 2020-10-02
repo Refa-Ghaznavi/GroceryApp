@@ -1,6 +1,7 @@
 package com.example.groceryapp.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +13,13 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.groceryapp.R;
+import com.example.groceryapp.activities.ShopDetailsActivity;
 import com.example.groceryapp.models.ModelShop;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -50,12 +57,14 @@ public class AdapterShop extends RecyclerView.Adapter<AdapterShop.HolderShop> {
         String online = modelShop.getOnline();
         String name = modelShop.getName();
         String phone = modelShop.getPhone();
-        String uid = modelShop.getUid();
+        final String uid = modelShop.getUid();
         String timestamp = modelShop.getTimestamp();
         String shopOpen = modelShop.getShopOpen();
         String state = modelShop.getState();
         String profileImage = modelShop.getProfileImage();
         String shopName = modelShop.getShopName();
+
+        loadReviews(modelShop, holder);// load avg rating, set to ratingBar;
 
         // set data
         holder.shopNameTv.setText(shopName);
@@ -85,6 +94,46 @@ public class AdapterShop extends RecyclerView.Adapter<AdapterShop.HolderShop> {
             holder.shopIv.setImageResource(R.drawable.ic_store_gray);
         }
 
+        // handle click listener, show shop details
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, ShopDetailsActivity.class);
+                intent.putExtra("shopUid", uid);
+                context.startActivity(intent);
+            }
+        });
+
+    }
+
+    private float ratingSum = 0;
+    private void loadReviews(ModelShop modelShop, final HolderShop holder) {
+
+        String shopUid = modelShop.getUid();
+
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Users");
+        ref.child(shopUid).child("Ratings")
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        // clear list before adding data into it
+                        ratingSum = 0;
+                        for (DataSnapshot ds: snapshot.getChildren()){
+                            float rating = Float.parseFloat(""+ds.child("ratings").getValue());// e.g. 4.3
+                            ratingSum = ratingSum + rating; // avg rating, add(addition of) all ratings, later will divide
+                        }
+
+                        long numberOfReviews = snapshot.getChildrenCount();
+                        float avgRating = ratingSum/numberOfReviews;
+
+                        holder.ratingBar.setRating(avgRating);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
     }
 
     @Override

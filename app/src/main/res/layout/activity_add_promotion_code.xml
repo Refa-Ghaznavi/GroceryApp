@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".activities.AddPromotionCodeActivity">
+
+    <!--toolbar-->
+    <RelativeLayout
+        android:id="@+id/toolbarRl"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@drawable/shape_rect01"
+        android:padding="@dimen/_10sdp">
+
+        <ImageButton
+            android:id="@+id/backBtn"
+            android:layout_width="@dimen/_30sdp"
+            android:layout_height="@dimen/_30sdp"
+            android:src="@drawable/ic_back_white"
+            android:background="@null"
+            android:layout_centerVertical="true"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            android:text="Add Promotion Codes"
+            android:textSize="@dimen/_20ssp"
+            android:textStyle="bold"
+            android:textColor="@color/colorWhite"/>
+
+    </RelativeLayout>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:id="@+id/imageTv"
+                android:layout_width="@dimen/_120sdp"
+                android:layout_height="@dimen/_120sdp"
+                android:layout_centerHorizontal="true"
+                android:background="@color/colorPrimary"
+                android:layout_margin="@dimen/_10sdp"
+                android:src="@drawable/ic_promotion"/>
+            <EditText
+                android:id="@+id/promoCodeEt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/imageTv"
+                android:layout_marginEnd="@dimen/_5sdp"
+                android:background="@drawable/shape_rect02"
+                android:drawableStart="@drawable/ic_discount_gray"
+                android:drawablePadding="@dimen/_5sdp"
+                android:hint="Promotion Code"
+                android:inputType="textCapWords"
+                android:padding="@dimen/_10sdp"
+                android:textColor="@color/colorBlack"
+                android:textColorHint="@color/colorGray02"/>
+            <EditText
+                android:id="@+id/promoDescriptionEt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/promoCodeEt"
+                android:layout_marginEnd="@dimen/_5sdp"
+                android:background="@drawable/shape_rect02"
+                android:drawableStart="@drawable/ic_discount_gray"
+                android:drawablePadding="@dimen/_5sdp"
+                android:hint="Promotion Description"
+                android:inputType="textCapSentences|textMultiLine"
+                android:padding="@dimen/_10sdp"
+                android:textColor="@color/colorBlack"
+                android:textColorHint="@color/colorGray02"/>
+            <EditText
+                android:id="@+id/promoPriceEt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/promoDescriptionEt"
+                android:layout_marginEnd="@dimen/_5sdp"
+                android:background="@drawable/shape_rect02"
+                android:drawableStart="@drawable/ic_cart_gray"
+                android:drawablePadding="@dimen/_5sdp"
+                android:hint="Promotion Price"
+                android:inputType="numberDecimal"
+                android:padding="@dimen/_10sdp"
+                android:textColor="@color/colorBlack"
+                android:textColorHint="@color/colorGray02"/>
+            <EditText
+                android:id="@+id/minimumOrderPriceEt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/promoPriceEt"
+                android:layout_marginEnd="@dimen/_5sdp"
+                android:background="@drawable/shape_rect02"
+                android:drawableStart="@drawable/ic_cart_gray"
+                android:drawablePadding="@dimen/_5sdp"
+                android:hint="Minimum Order Price"
+                android:inputType="numberDecimal"
+                android:padding="@dimen/_10sdp"
+                android:textColor="@color/colorBlack"
+                android:textColorHint="@color/colorGray02"/>
+            <TextView
+                android:id="@+id/expireDateTv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/minimumOrderPriceEt"
+                android:layout_marginEnd="@dimen/_5sdp"
+                android:background="@drawable/shape_rect02"
+                android:drawableStart="@drawable/ic_calendar_gray"
+                android:drawablePadding="@dimen/_5sdp"
+                android:hint="Expire Date"
+                android:gravity="center_vertical"
+                android:padding="@dimen/_10sdp"
+                android:textColor="@color/colorBlack"
+                android:textColorHint="@color/colorGray02"/>
+            <Button
+                android:id="@+id/addBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/expireDateTv"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:minWidth="@dimen/_150sdp"
+                android:text="Add"
+                style="@style/Widget.AppCompat.Button.Colored"/>
+        </RelativeLayout>
+    </ScrollView>
+</LinearLayout>
