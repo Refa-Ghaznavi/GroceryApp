@@ -59,6 +59,7 @@ public class OrderDetailsSellerActivity extends AppCompatActivity {
 
     private FirebaseAuth firebaseAuth;
 
+
     private ArrayList<ModelOrderedItem> orderedItemArrayList;
     private AdapterOrderedItem adapterOrderedItem;
 
@@ -82,8 +83,8 @@ public class OrderDetailsSellerActivity extends AppCompatActivity {
         itemsRv = findViewById(R.id.itemsRv);
 
         //get data from intent
-        orderId = getIntent().getStringExtra("orderId");
-        orderBy = getIntent().getStringExtra("orderBy");
+       // orderId = getIntent().getStringExtra("orderId");
+       // orderBy = getIntent().getStringExtra("orderBy");
 
         firebaseAuth = FirebaseAuth.getInstance();
         loadMyInfo();
@@ -140,6 +141,9 @@ public class OrderDetailsSellerActivity extends AppCompatActivity {
         hashMap.put("orderStatus", ""+selectionOption);
 
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Users");
+
+        //String uid = FirebaseAuth.getInstance().getUid();
+        String orderId = getIntent().getStringExtra("orderId");
         if(orderId != null){
             ref.child(firebaseAuth.getUid()).child("Orders").child(orderId)
                     .updateChildren(hashMap)
@@ -150,6 +154,7 @@ public class OrderDetailsSellerActivity extends AppCompatActivity {
                             // status updated
                             Toast.makeText(OrderDetailsSellerActivity.this, message , Toast.LENGTH_SHORT).show();
 
+                            String orderId = getIntent().getStringExtra("orderId");
                             prepareNotificationMessage(orderId, message);
                         }
                     })
@@ -191,6 +196,7 @@ public class OrderDetailsSellerActivity extends AppCompatActivity {
     }
     private void loadBuyerInfo() {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Users");
+        String orderBy = getIntent().getStringExtra("orderBy");
         if(orderBy != null){
             ref.child(orderBy)
                     .addValueEventListener(new ValueEventListener() {
@@ -221,6 +227,7 @@ public class OrderDetailsSellerActivity extends AppCompatActivity {
     private void loadOrderDetails() {
         // load detailed info of this order, based on order id
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Users");
+        String orderBy = getIntent().getStringExtra("orderBy");
         if(orderBy != null){
             ref.child(firebaseAuth.getUid()).child("Orders").child("orderId")
                     .addValueEventListener(new ValueEventListener() {
@@ -297,6 +304,7 @@ public class OrderDetailsSellerActivity extends AppCompatActivity {
         // init list
         orderedItemArrayList = new ArrayList<>();
 
+        String orderId = getIntent().getStringExtra("orderId");
         if(orderId != null){
             DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Users");
             ref.child(firebaseAuth.getUid()).child("Orders").child(orderId).child("Items")
